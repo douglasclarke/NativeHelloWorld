@@ -1,4 +1,4 @@
-name: GraalVM Native Image builds
+name: Native-image ADM demo
 on: [push, pull_request]
 jobs:
   build:
@@ -19,29 +19,24 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           native-image-job-reports: 'true'
 
-      - name: Generate sbom
+      - name: Build 
         run: |
-          mvn org.cyclonedx:cyclonedx-maven-plugin:2.7.1:makeAggregateBom -DoutputFormat=json -DincludeProvidedScope=false -DincludeSystemScope=false -DincludeTestScope=false -DoutputName=NativeHelloWorld.cdx.sbom
+          mvn -Pnative -DskipTests package
+          native-image-inspect target/NativeHelloWorld 2>&1 | jq . > target/NativeHelloWorld.inspect.cm.json
+          native-image-inspect --sbom target/NativeHelloWorld | jq . > target/NativeHelloWorld.inspect.sbom.json
+      
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: NativeHelloWorld
+          path: target/NativeHelloWorld
 
       - name: Create ADM deps from SBOM
         run: |
           java -jar sbom-utils.jar target/NativeHelloWorld.cdx.sbom.json --output=target/NativeHelloWorld.app-deps.json
           
-      - name: Build 
-        run: |
-          mvn package
-          native-image --enable-sbom -jar target/NativeHelloWorld-1.0-SNAPSHOT.jar
-          native-image-inspect NativeHelloWorld-1.0-SNAPSHOT 2>&1 | jq . > target/NativeHelloWorld.inspect.json
-          native-image-inspect --sbom NativeHelloWorld-1.0-SNAPSHOT | jq . > target/NativeHelloWorld.inspect.sbom.json
-      
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: helloworld-${{ matrix.os }}
-          path: helloworld*
-
       - name: Upload JSON files
         uses: actions/upload-artifact@v2
         with:
-          name: JSON files
+          name: build JSON
           path: target/NativeHelloWorld.*.json
