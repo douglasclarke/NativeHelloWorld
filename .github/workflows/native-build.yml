@@ -30,27 +30,25 @@ jobs:
           mvn -Pnative -DskipTests package
           native-image-inspect target/NativeHelloWorld 2>&1 | jq . > target/NativeHelloWorld.inspect.cm.json
           native-image-inspect --sbom target/NativeHelloWorld | jq . > target/NativeHelloWorld.inspect.sbom.json
-      
-      - name: Upload binary
-        uses: actions/upload-artifact@v2
-        with:
-          name: NativeHelloWorld
-          path: target/NativeHelloWorld
-
-      - name: Create ADM deps from SBOM
-        run: |
           java -jar sbom-utils.jar target/NativeHelloWorld.cdx.sbom.json --output=target/NativeHelloWorld.app-deps.json
-          
-      - name: Upload JSON files
-        uses: actions/upload-artifact@v2
-        with:
-          name: build JSON
-          path: target/NativeHelloWorld.*.json
-
+      
       - name: Create ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1
         id: create-build-va
         with:
           command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
           silent: 'False'
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: NativeHelloWorld
+          path: target/NativeHelloWorld
+
+      - name: Upload JSON files
+        uses: actions/upload-artifact@v2
+        with:
+          name: build JSON
+          path: target/NativeHelloWorld.*.json
+
           
