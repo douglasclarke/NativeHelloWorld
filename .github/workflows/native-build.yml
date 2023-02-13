@@ -1,9 +1,15 @@
-name: Native-image ADM demo
+name: GraalVM Native Image builds
 on: [push, pull_request]
 jobs:
   build:
     name: HelloWorld on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    env:
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -40,3 +46,10 @@ jobs:
         with:
           name: build JSON
           path: target/NativeHelloWorld.*.json
+
+      - name: Create ADM Vuln.Audit
+        uses: oracle-actions/run-oci-cli-command@v1.1
+        id: create-build-va
+        with:
+          command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
+          
