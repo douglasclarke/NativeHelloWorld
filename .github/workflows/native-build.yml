@@ -12,7 +12,7 @@ jobs:
 
       - uses: graalvm/setup-graalvm@v1
         with:
-          version: '22.3.0'
+          version: '22.3.1'
           gds-token: ${{ secrets.GDS_TOKEN }}
           java-version: '17'
           components: 'native-image'
