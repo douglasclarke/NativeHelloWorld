@@ -1,0 +1,53 @@
+name: GraalVM Native Image builds
+on: [push, pull_request]
+jobs:
+  build:
+    name: HelloWorld on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.0'
+          gds-token: 'RTg3Q0UxMkUxRTU5RUREOUUwNTMxODE4MDAwQUM3QUQ6NjczMzdiN2I3ZmMyNmI3ODc5NDVkN2U2M2MzYTc5YTdlYWZkZjQ5OQ'
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Generate sbom
+        run: |
+          mvn org.cyclonedx:cyclonedx-maven-plugin:2.7.1:makeAggregateBom -DoutputFormat=json -DincludeProvidedScope=false -DincludeSystemScope=false -DincludeTestScope=false -DoutputName=cdx.sbom
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v2
+        with:
+          name: helloworld-sbom.json
+          path: target/cdx.sbom.json
+
+      - name: Create ADM deps from SBOM
+        run: |
+          java -jar sbom-utils.jar target/cdx.sbom.json
+          
+      - name: Upload ADM deps
+        uses: actions/upload-artifact@v2
+        with:
+          name: adm_dependencies.json
+          path: adm_dependencies.json
+
+      - name: Build 
+        run: |
+          mvn install
+          native-image --version
+          native-image --enable-sbom -jar target/NativeHelloWorld-1.0-SNAPSHOT.jar
+          native-image-inspect --sbom NativeHelloWorld-1.0-SNAPSHOT | jq . > NativeHelloWorld.inspect.json
+      
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: helloworld-${{ matrix.os }}
+          path: helloworld*
