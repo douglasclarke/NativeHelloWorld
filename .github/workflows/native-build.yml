@@ -45,7 +45,7 @@ jobs:
         with:
           action: oracle-actions/run-oci-cli-command@v1.1
           with:
-            command: 'oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}'
+            command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}'
             query: "data.is-success"
             silent: 'False'
         attempt_limit: 3
