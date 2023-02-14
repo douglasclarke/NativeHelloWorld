@@ -48,8 +48,8 @@ jobs:
             command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}'
             query: "data.is-success"
             silent: 'False'
-        attempt_limit: 3
-        attempt_delay: 2000
+          attempt_limit: 3
+          attempt_delay: 2000
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
