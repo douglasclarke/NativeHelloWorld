@@ -1,4 +1,4 @@
-name: GraalVM Native Image builds
+name: Native Image Hello World builds
 on: [push, pull_request]
 jobs:
   build:
@@ -34,10 +34,22 @@ jobs:
       
       - name: Create ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1
-        id: create-build-va
+        id: create-adm-va
         with:
           command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
+          query: "data.id"
           silent: 'False'
+
+      - name: Get ADM Vuln.Audit
+        uses: Wandalen/wretry.action@master
+        with:
+          action: oracle-actions/run-oci-cli-command@v1.1
+          with:
+            command: 'oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}'
+            query: "data.is-success"
+            silent: 'False'
+        attempt_limit: 3
+        attempt_delay: 2000
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
