@@ -63,7 +63,7 @@ jobs:
         with: 
           command: 'adm vulnerability-audit get --vulnerability-audit-id=ocid1.admvulnerabilityaudit.oc1.iad.amaaaaaacrsaiiiaymf6q4yz4vqhqm6s3ozviypcgp7qtrowsvphh5sczivq'
 #           ${{ steps.create-adm-va.outputs.raw_output }}'
-          query: 'data.{"is-success": "is-success", vulnerabilities: vulnerabilities}'
+          query: 'data.vulnerabilities'
           silent: false
           
       - name: Display the Vuln.Audit
