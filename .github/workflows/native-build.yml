@@ -48,14 +48,15 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: create-adm-va
         with:
-          command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json --max-wait-seconds=1200 --wait-for-state SUCCEEDED --wait-for-state FAILED'
+          command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
           query: "data.id"
           silent: false
           
       - name: Get ADM Vuln.Audit Result
-        id: poll-adm-va
+        id: get-adm-va
         run: |
           while [ $(oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} | jq '.data.lifecycle-state') == "CREATING" ]; do sleep 10; done
+          oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} >> $GITHUB_OUTPUT
           
       - name: Get ADM Vuln.Audit Result
         id: get-adm-va
@@ -63,7 +64,7 @@ jobs:
         with: 
           command: adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}
           query: 'data'
-          
+
       - name: Display the Vuln.Audit  
         run: |
           echo ${{ steps.get-adm-va.outputs.output }} | jq .
