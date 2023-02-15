@@ -53,12 +53,17 @@ jobs:
           silent: false
           
       - name: Get ADM Vuln.Audit Result
+        id: poll-adm-va
+        run: |
+          while [ $(oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} | jq '.data.lifecycle-state') == "CREATING" ]; do sleep 10; done
+          
+      - name: Get ADM Vuln.Audit Result
         id: get-adm-va
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         with: 
           command: adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}
           query: 'data'
           
-      - name: Display the Vuln.Audit 
+      - name: Display the Vuln.Audit  
         run: |
           echo ${{ steps.get-adm-va.outputs.output }} | jq .
