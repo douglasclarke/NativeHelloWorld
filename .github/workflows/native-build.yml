@@ -4,12 +4,6 @@ jobs:
   build:
     name: Build HelloWorld native-image on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
-    env:
-      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
-      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
-      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
-      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -45,8 +39,8 @@ jobs:
           path: target/NativeHelloWorld.*.json
 
   verify:
+    needs: build
     name: ADM Vulnerability Audit
-    runs-on: ${{ matrix.os }}
     env:
       OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
       OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
