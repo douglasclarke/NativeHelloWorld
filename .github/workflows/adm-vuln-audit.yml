@@ -1,5 +1,5 @@
 name: Create ADM VA
-on: [workflow_run]
+on: [workflow_dispatch]
 jobs:
   build:
     name: Build HelloWorld native-image on ${{ matrix.os }}
