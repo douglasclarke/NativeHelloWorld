@@ -29,10 +29,6 @@ jobs:
           query: "data.id"
           silent: false
           
-      - name: Sleep 30s
-        run: |
-          sleep 30s
-          
       - name: GET ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
