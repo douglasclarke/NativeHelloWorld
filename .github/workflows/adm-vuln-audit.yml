@@ -38,9 +38,5 @@ jobs:
         id: get-adm-va
         with:
           command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
-          query: "data"
           silent: false
           
-      - name: Display the Vuln.Audit  
-        run: |
-          echo ${{ steps.get-adm-va.outputs.output }} | jq .
