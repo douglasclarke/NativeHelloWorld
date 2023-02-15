@@ -29,10 +29,10 @@ jobs:
           query: "data.id"
           silent: false
           
-      - name: GET ADM Vuln.Audit
-        uses: oracle-actions/run-oci-cli-command@v1.1.1
-        id: get-adm-va
-        with:
-          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
-          silent: false
+#      - name: GET ADM Vuln.Audit
+#        uses: oracle-actions/run-oci-cli-command@v1.1.1
+#        id: get-adm-va
+#        with:
+#          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
+#          silent: false
           
