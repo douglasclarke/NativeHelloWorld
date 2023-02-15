@@ -52,16 +52,16 @@ jobs:
           query: "data.id"
           silent: false
           
-#      - name: Sleep for 3 minutes
-#        uses: juliangruber/sleep-action@v1
-#        with:
-#          time: 180s
+      - name: Sleep for 2 minutes
+        uses: juliangruber/sleep-action@v1
+        with:
+          time: 120s
 
       - name: Get ADM Vuln.Audit Result
         id: get-adm-va
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         with: 
-          command: adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}
+          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
           query: 'data.vulnerabilities'
           silent: false
           
