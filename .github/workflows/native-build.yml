@@ -44,11 +44,12 @@ jobs:
         with:
           time: 180s
 
-      - name: Get ADM Vuln.Audit
+      - name: Get ADM Vuln.Audit Result
         id: get-adm-va
         uses: oracle-actions/run-oci-cli-command@v1.1
         with: 
-          command: 'adm vulnerability-audit get --vulnerability-audit-id ${{ steps.create-adm-va.outputs.raw_output }}'
+          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}'
+          query: "data.{is-success: is-success, vulnerabilities: vulnerabilities}"
           
       - name: List the display name and shape of the instances in my compartment
         run: |
