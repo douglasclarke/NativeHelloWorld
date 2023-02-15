@@ -61,7 +61,7 @@ jobs:
         id: get-adm-va
         uses: oracle-actions/run-oci-cli-command@v1.1
         with: 
-          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}'
+          command: 'adm vulnerability-audit get --vulnerability-audit-id=ocid1.admvulnerabilityaudit.oc1.iad.amaaaaaacrsaiiiaymf6q4yz4vqhqm6s3ozviypcgp7qtrowsvphh5sczivq'
           query: "data"
           silent: false
           
