@@ -29,16 +29,17 @@ jobs:
           query: "data.id"
           silent: false
           
-      - name: GET the Vuln.Audit 
-        id: get-adm-va 
-        uses: Wandalen/wretry.action@master
+      - name: Sleep 30s
+        run: |
+          sleep 30s
+          
+      - name: GET ADM Vuln.Audit
+        uses: oracle-actions/run-oci-cli-command@v1.1.1
+        id: get-adm-va
         with:
-          action: oracle-actions/run-oci-cli-command@v1.1.1
-          with: |
-            command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
-            query: "data[?lifecycle-state != 'CREATING']"
-          attempt_limit: 3
-          attempt_delay: 2000         
+          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
+          query: "data"
+          silent: false
           
       - name: Display the Vuln.Audit  
         run: |
