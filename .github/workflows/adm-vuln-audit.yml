@@ -1,5 +1,5 @@
-name: Native Image Hello World builds
-on: [push, pull_request]
+name: Create ADM VA
+on: [workflow_run]
 jobs:
   build:
     name: Build HelloWorld native-image on ${{ matrix.os }}
