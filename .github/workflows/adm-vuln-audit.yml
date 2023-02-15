@@ -29,11 +29,16 @@ jobs:
           query: "data.id"
           silent: false
           
-      - name: Get ADM Vuln.Audit Result
-        id: get-adm-va
-        run: |
-          while [ $(oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} | jq '.data.lifecycle-state') == "CREATING" ]; do sleep 10; done
-          oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} >> $GITHUB_OUTPUT
+      - name: GET the Vuln.Audit 
+        id: get-adm-va 
+        uses: Wandalen/wretry.action@master
+        with:
+          action: oracle-actions/run-oci-cli-command@v1.1.1
+          with: |
+            command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
+            query: "data[?lifecycle-state != 'CREATING']"
+          attempt_limit: 3
+          attempt_delay: 2000         
           
       - name: Display the Vuln.Audit  
         run: |
