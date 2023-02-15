@@ -1,4 +1,4 @@
-name: Native Image Hello World builds
+name: Native Image Build
 on: [push, pull_request]
 jobs:
   build:
