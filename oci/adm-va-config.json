@@ -1,0 +1,9 @@
+{
+    "configuration": {
+        "exclusions": [
+            "org.yaml:snakeyaml:*"
+        ],
+        "maxPermissibleCvssV2Score": 0.0,
+        "maxPermissibleCvssV3Score": 0.0
+    }
+}
