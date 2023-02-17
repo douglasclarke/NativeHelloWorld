@@ -10,7 +10,6 @@ jobs:
       OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
-      ADM_VA_QUERY: '\"data.{success: \"is-success\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}\"'
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -39,8 +38,7 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
         with:
-          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}''
-          query: '${{ env.ADM_VA_QUERY }}'
+          command: "--query \"data.{success: \"is-success\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}\" adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
           silent: false
           
       - name: Evaluate Vuln.Audit
