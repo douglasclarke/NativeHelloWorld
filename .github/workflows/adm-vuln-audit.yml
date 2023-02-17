@@ -38,7 +38,7 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
         with:
-          command: "--query \"data.{success: \"is-success\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}\" adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
+          command: "--query 'data.{success: \"is-success\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}' adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
           silent: false
           
       - name: Evaluate Vuln.Audit
