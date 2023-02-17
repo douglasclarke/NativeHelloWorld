@@ -1,4 +1,4 @@
-name: Buld with ADM Vuln.Audit
+name: Create ADM VA
 on: [workflow_dispatch]
 jobs:
   build:
@@ -39,15 +39,14 @@ jobs:
         id: get-adm-va
         with:
           command: "adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
-          query: "data"
+          query: "data.{success: \"is-succeess\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}"
           
       - name: Evaluate Vuln.Audit
         run: |
-          VA_RESULT=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '."is-success",."lifecycle-state"')
-          VULNS=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -r '.vulnerabilities') >> GITHUB_STEP_SUMMARY
+          VA_RESULT=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '.success,.state')
 
           if [ "$VA_RESULT" != "trueACTIVE" ]; then
-            echo "### FAILED Vulnerability Audit:\n${VULNS}" >> $GITHUB_STEP_SUMMARY
+            echo "### FAILED Vulnerability Audit:\n${{ steps.get-adm-va.outputs.output }}" >> $GITHUB_STEP_SUMMARY
             exit 1
           else
             echo "### PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
