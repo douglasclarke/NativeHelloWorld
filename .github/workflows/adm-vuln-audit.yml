@@ -1,4 +1,4 @@
-name: Create ADM VA
+name: Buld with ADM Vuln.Audit
 on: [workflow_dispatch]
 jobs:
   build:
