@@ -39,7 +39,7 @@ jobs:
         id: get-adm-va
         with:
           command: "adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
-          query: "data.{success: \"is-success\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}"
+          query: "data.{success: is-success, state: lifecycle-state, vulnerabilities: vulnerabilities}"
           
       - name: Evaluate Vuln.Audit
         run: |
