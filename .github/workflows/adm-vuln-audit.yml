@@ -28,11 +28,15 @@ jobs:
           command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world-2" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json --configuration=file://oci/adm-va-config.json'
           query: "data.id"
           silent: false
-          
-#      - name: GET ADM Vuln.Audit
-#        uses: oracle-actions/run-oci-cli-command@v1.1.1
-#        id: get-adm-va
-#        with:
-#          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
-#          silent: false
+
+      - name: Build 
+        run: |
+          sleep 30s
+
+      - name: GET ADM Vuln.Audit
+        uses: oracle-actions/run-oci-cli-command@v1.1.1
+        id: get-adm-va
+        with:
+          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
+          silent: false
           
