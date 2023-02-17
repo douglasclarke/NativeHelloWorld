@@ -10,7 +10,7 @@ jobs:
       OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
-      ADM_VA_QUERY: "\"data.{success: \"is-success\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}\""
+      ADM_VA_QUERY: '\"data.{success: \"is-success\", state: \"lifecycle-state\", vulnerabilities: vulnerabilities}\"'
     strategy:
       matrix:
         os: [ubuntu-latest]
