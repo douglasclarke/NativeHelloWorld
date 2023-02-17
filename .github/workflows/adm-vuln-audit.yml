@@ -27,7 +27,6 @@ jobs:
         with:
           command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world-2" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json --configuration=file://oci/adm-va-config.json'
           query: "data.id"
-          silent: false
 
       - name: ADM Wait for VA (30s)
         id: adm-wait-va
@@ -41,16 +40,14 @@ jobs:
         with:
           command: "adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
           query: "data"
-          silent: false
           
       - name: Evaluate Vuln.Audit
         run: |
-          echo "::add-mask::${{ steps.get-adm-va.outputs.output }}"
-          SUCCESS=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '."is-success"'`
-          LIFECYCLE=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '."lifecycle-state"'`
-          echo ${{ steps.get-adm-va.outputs.output }} | jq -r '.vulnerabilities' >> GITHUB_STEP_SUMMARY
-          if [ "$SUCCESS" != "true" ] && [ "$LIFECYCLE" != "ACTIVE" ]; then
-            echo "### FAILED Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
+          VA_RESULT=`echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '."is-success",."lifecycle-state"'`
+          VULNS=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '.vulnerabilities'` >> GITHUB_STEP_SUMMARY`
+
+          if [ "$VA_RESULT" != "trueACTIVE" ]; then
+            echo "### FAILED Vulnerability Audit:\n${VULNS}" >> $GITHUB_STEP_SUMMARY
             exit 1
           else
             echo "### PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
