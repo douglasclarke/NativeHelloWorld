@@ -43,8 +43,8 @@ jobs:
           
       - name: Evaluate Vuln.Audit
         run: |
-          VA_RESULT=`echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '."is-success",."lifecycle-state"'`
-          VULNS=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '.vulnerabilities'` >> GITHUB_STEP_SUMMARY`
+          VA_RESULT=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '."is-success",."lifecycle-state"')
+          VULNS=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -r '.vulnerabilities') >> GITHUB_STEP_SUMMARY`
 
           if [ "$VA_RESULT" != "trueACTIVE" ]; then
             echo "### FAILED Vulnerability Audit:\n${VULNS}" >> $GITHUB_STEP_SUMMARY
