@@ -1,6 +1,6 @@
 {
     "exclusions": [
-        "org.yaml:snakeyaml:1.33"
+        "org.yaml:snakeyaml:1.34"
     ],
     "maxPermissibleCvssV2Score": 0.0,
     "maxPermissibleCvssV3Score": 0.0
