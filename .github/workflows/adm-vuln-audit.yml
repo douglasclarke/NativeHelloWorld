@@ -29,22 +29,28 @@ jobs:
           query: "data.id"
           silent: false
 
-      - name: ADM Wait for VA 
+      - name: ADM Wait for VA (30s)
         id: adm-wait-va
         run: |
           sleep 30s
           echo "ADM_VA_ID=${{ steps.create-adm-va.outputs.output }}" | sed 's/\"//g' >> $GITHUB_ENV
-
-      - name: Test output env.ADM_VA_ID
-        run: |
-          echo "adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
 
       - name: GET ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
         with:
           command: "adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
+          query: "data"
+          silent: false
           
-      - name: Display VA
+      - name: Evaluate Vuln.Audit
         run: |
-          echo ${{ steps.get-adm-va.outputs.output }} | jq .
+          SUCCESS=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '."is-success"'`
+          LIFECYCLE=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '."lifecycle-state"'`
+          echo ${{ steps.get-adm-va.outputs.output }} >> GITHUB_STEP_SUMMARY
+          if [ "$SUCCESS" != "true" ] && [ "$LIFECYCLE" != "ACTIVE" ]; then
+            echo "FAILED Vulnerability Audit"
+            exit 1
+          else
+            echo "PASSED Vulnerability Audit"
+          fi  
