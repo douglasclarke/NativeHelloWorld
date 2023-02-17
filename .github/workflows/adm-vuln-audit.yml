@@ -45,12 +45,13 @@ jobs:
           
       - name: Evaluate Vuln.Audit
         run: |
+          echo "::add-mask::${{ steps.get-adm-va.outputs.output }}"
           SUCCESS=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '."is-success"'`
           LIFECYCLE=`echo ${{ steps.get-adm-va.outputs.output }} | jq -r '."lifecycle-state"'`
           echo ${{ steps.get-adm-va.outputs.output }} >> GITHUB_STEP_SUMMARY
           if [ "$SUCCESS" != "true" ] && [ "$LIFECYCLE" != "ACTIVE" ]; then
-            echo "FAILED Vulnerability Audit"
+            echo "### FAILED Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
             exit 1
           else
-            echo "PASSED Vulnerability Audit"
+            echo "### PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
           fi  
