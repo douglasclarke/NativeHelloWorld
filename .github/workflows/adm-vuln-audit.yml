@@ -29,14 +29,14 @@ jobs:
           query: "data.id"
           silent: false
 
-#      - name: Sleep 
-#        run: |
-#          sleep 30s
+      - name: Sleep 
+        run: |
+          sleep 30s
 
       - name: GET ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
         with:
-          command: 'adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
+          command: 'adm vulnerability-audit get --debug --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}'
           silent: false
           
