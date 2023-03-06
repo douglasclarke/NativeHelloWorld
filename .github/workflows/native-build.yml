@@ -52,12 +52,12 @@ jobs:
           query: "data.id"
           silent: false
           
-      - name: Get ADM Vuln.Audit Result
-        id: get-adm-va
-        run: |
-          while [ $(oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} | jq '.data.lifecycle-state') == "CREATING" ]; do sleep 10; done
-          oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} >> $GITHUB_OUTPUT
+#      - name: Get ADM Vuln.Audit Result
+#        id: get-adm-va
+#        run: |
+#          while [ $(oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} | jq '.data.lifecycle-state') == "CREATING" ]; do sleep 10; done
+#          oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }} >> $GITHUB_OUTPUT
           
-      - name: Display the Vuln.Audit  
-        run: |
-          echo ${{ steps.get-adm-va.outputs.output }} | jq .
+#      - name: Display the Vuln.Audit  
+#        run: |
+#          echo ${{ steps.get-adm-va.outputs.output }} | jq .
