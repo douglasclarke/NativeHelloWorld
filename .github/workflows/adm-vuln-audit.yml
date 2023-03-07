@@ -32,14 +32,14 @@ jobs:
       - name: ADM Wait for VA (60s)
         id: adm-wait-va
         run: |
-          echo ${{ steps.create-adm-va.raw_output }}
+          echo ${{ steps.create-adm-va.outputs.output }}
           sleep 60s
 
       - name: GET ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
         with:
-          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}"
+          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.output }}"
           silent: false
           query: "data"
           
