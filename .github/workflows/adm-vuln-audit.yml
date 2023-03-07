@@ -38,7 +38,7 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
         with:
-          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
+          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw.output }}"
           silent: false
           query: "data"
           
