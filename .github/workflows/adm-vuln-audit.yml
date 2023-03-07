@@ -27,12 +27,9 @@ jobs:
         with:
           command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world-2" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json --configuration=file://oci/adm-va-config.json'
           query: "[data.id]"
-          silent: false
-
       - name: ADM Wait for VA (60s)
         id: adm-wait-va
         run: |
-          echo ${{ steps.create-adm-va.outputs.raw_output }}
           sleep 60s
 
       - name: GET ADM Vuln.Audit
@@ -40,7 +37,6 @@ jobs:
         id: get-adm-va
         with:
           command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}"
-          silent: false
           query: "data"
           
       - name: Evaluate Vuln.Audit
