@@ -32,6 +32,7 @@ jobs:
       - name: ADM Wait for VA (60s)
         id: adm-wait-va
         run: |
+          echo ${{ steps.create-adm-va.outputs.raw_output }}"
           sleep 60s
 
       - name: GET ADM Vuln.Audit
