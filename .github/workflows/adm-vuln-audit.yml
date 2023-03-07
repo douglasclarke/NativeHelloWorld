@@ -33,7 +33,6 @@ jobs:
         id: adm-wait-va
         run: |
           sleep 60s
-          echo "ADM_VA_ID=${{ steps.create-adm-va.outputs.output }}" | sed 's/\"//g' >> $GITHUB_ENV
 
       - name: GET ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1.1
