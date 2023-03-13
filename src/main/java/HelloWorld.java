@@ -1,3 +1,8 @@
+import java.util.Map;
+import java.util.HashMap;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+
 import org.yaml.snakeyaml.Yaml;
 
 public class HelloWorld { 
@@ -9,6 +14,7 @@ public class HelloWorld {
         data.put("Hello", "World");
 
        Yaml yaml = new Yaml();
-       yaml.dump(data, System.out);
+       BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
+       yaml.dump(data, out);
     } 
 }
