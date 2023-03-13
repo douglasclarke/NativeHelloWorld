@@ -84,6 +84,6 @@ jobs:
       - name: Upload Docker Image
         uses: actions/upload-artifact@v2
         with:
-          name: build JSON
+          name: native-hello.image
           path: target/native-hello.image
           
