@@ -75,3 +75,7 @@ jobs:
           else
             echo "### PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
           fi  
+
+      - name: Docker build
+        run: |
+          docker build -t native-hello .
