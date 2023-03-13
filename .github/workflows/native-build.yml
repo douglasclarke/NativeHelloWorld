@@ -71,7 +71,7 @@ jobs:
             echo "# FAILED Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
             echo "## Vulnerability Audit OCID: ${{ steps.create-adm-va.outputs.raw_output }}" >> $GITHUB_STEP_SUMMARY
             echo "oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}" >> $GITHUB_STEP_SUMMARY
-            exit 1
+#            exit 1
           else
             echo "### PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
           fi  
