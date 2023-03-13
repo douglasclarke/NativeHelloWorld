@@ -78,8 +78,10 @@ jobs:
 
       - name: Docker build
         run: |
-          docker build -t native-hello .
-          docker save -o target/native-hello.image native-hello
+          docker build -t native-hello:latest .
+          docker tag native-hello:latest us-ashburn-1.ocir.io/oracledeveloper/demo/native-hello:latest
+          docker login --username ${{ secrets.OCI_AUTH_USER }} --password ${{ secrets.OCI_AUTH_TOKEN}} us-ashburn-1.ocir.io
+          docker push us-ashburn-1.ocir.io/oracledeveloper/demo/native-hello:latest
           
       - name: Upload Docker Image
         uses: actions/upload-artifact@v2
