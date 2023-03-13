@@ -79,3 +79,11 @@ jobs:
       - name: Docker build
         run: |
           docker build -t native-hello .
+          docker save -o target/native-hello.image native-hello
+          
+      - name: Upload Docker Image
+        uses: actions/upload-artifact@v2
+        with:
+          name: build JSON
+          path: target/native-hello.image
+          
