@@ -2,7 +2,7 @@ name: Build with ADM Vuln.Audit
 on: [workflow_dispatch]
 jobs:
   build:
-    name: Build HelloWorld native-image on ${{ matrix.os }}
+    name: Build HelloWorld jar on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
       OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
