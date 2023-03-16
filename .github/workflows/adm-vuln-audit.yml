@@ -32,13 +32,13 @@ jobs:
         id: adm-wait-va
         run: |
           sleep 60s
-          echo "ADM_VA_ID=${{ steps.create-adm-va.outputs.raw_output }}" >> $GITHUB_ENV
+          echo "ADM_VA_ID=${{ steps.create-adm-va.outputs.output }}" >> $GITHUB_ENV
 
       - name: GET ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: get-adm-va
         with:
-          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}"
+          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}"
           query: "data"
           
       - name: Evaluate Vuln.Audit
