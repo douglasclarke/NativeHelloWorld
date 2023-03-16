@@ -1,5 +1,5 @@
 {
     "exclusions": [],
-    "maxPermissibleCvssV2Score": 9.9,
-    "maxPermissibleCvssV3Score": 9.9
+    "maxPermissibleCvssV2Score": 8.0,
+    "maxPermissibleCvssV3Score": 8.0
 }
