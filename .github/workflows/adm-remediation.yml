@@ -1,0 +1,90 @@
+name: ADM Remediation Verify
+on: [workflow_dispatch]
+jobs:
+  build:
+    name: Build HelloWorld native-image on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: graalvm/setup-graalvm@v1
+        with:
+          version: '22.3.1'
+          gds-token: ${{ secrets.GDS_TOKEN }}
+          java-version: '17'
+          components: 'native-image'
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          native-image-job-reports: 'true'
+
+      - name: Build 
+        run: |
+          mvn -Pnative package
+          native-image-inspect target/NativeHelloWorld 2>&1 | jq . > target/NativeHelloWorld.inspect.cm.json
+          native-image-inspect --sbom target/NativeHelloWorld | jq . > target/NativeHelloWorld.inspect.sbom.json
+          java -jar sbom-utils.jar target/NativeHelloWorld.cdx.sbom.json --output=target/NativeHelloWorld.app-deps.json
+
+      - name: Upload binary
+        uses: actions/upload-artifact@v2
+        with:
+          name: NativeHelloWorld
+          path: target/NativeHelloWorld
+
+      - name: Upload JSON files
+        uses: actions/upload-artifact@v2
+        with:
+          name: build JSON
+          path: target/NativeHelloWorld.*.json
+
+      - name: Create ADM Vuln.Audit
+        uses: oracle-actions/run-oci-cli-command@v1.1.1
+        id: create-adm-va
+        with:
+          command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
+          query: "[data.id]"
+          silent: false
+          
+      - name: ADM Wait for VA (60s)
+        id: adm-wait-va
+        run: |
+          sleep 60s          
+          
+      - name: GET ADM Vuln.Audit
+        uses: oracle-actions/run-oci-cli-command@v1.1.1
+        id: get-adm-va
+        with:
+          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}"
+          query: "data"
+          
+      - name: Evaluate Vuln.Audit
+        run: |
+          VA_RESULT=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '."is-success",."lifecycle-state"')
+          if [ "$VA_RESULT" != "trueACTIVE" ]; then
+            echo "# FAILED Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
+            echo "## Vulnerability Audit OCID: ${{ steps.create-adm-va.outputs.raw_output }}" >> $GITHUB_STEP_SUMMARY
+            echo "oci adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "### PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
+          fi  
+
+      - name: Docker build
+        run: |
+          docker build -t native-hello:latest .
+          docker tag native-hello:latest us-ashburn-1.ocir.io/oracledeveloper/demo/native-hello:latest
+          docker login --username ${{ secrets.OCI_AUTH_USER }} --password ${{ secrets.OCI_AUTH_TOKEN}} us-ashburn-1.ocir.io
+          docker push us-ashburn-1.ocir.io/oracledeveloper/demo/native-hello:latest
+          
+      - name: Upload Docker Image
+        uses: actions/upload-artifact@v2
+        with:
+          name: native-hello.image
+          path: target/native-hello.image
+          
