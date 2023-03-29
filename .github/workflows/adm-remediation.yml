@@ -2,7 +2,7 @@ name: ADM Remediation Verify
 on: [workflow_dispatch]
 jobs:
   build:
-    name: Build HelloWorld native-image on ${{ matrix.os }}
+    name: Verify ADM remediation changes
     runs-on: ${{ matrix.os }}
     env:
       OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
