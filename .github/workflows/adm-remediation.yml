@@ -18,10 +18,4 @@ jobs:
 
       - name: Build 
         run: |
-          mvn package test
-
-      - name: Upload JSON files
-        uses: actions/upload-artifact@v2
-        with:
-          name: build JSON
-          path: target/NativeHelloWorld.*.json
+          mvn package 
