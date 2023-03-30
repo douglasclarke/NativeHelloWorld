@@ -13,4 +13,3 @@ jobs:
       - name: Build 
         run: |
           mvn package 
-          exit 1
