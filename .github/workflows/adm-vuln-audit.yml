@@ -5,11 +5,12 @@ jobs:
     name: Build HelloWorld jar on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
-      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
-      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
-      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
-      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+      OCI_USER: ${{ secrets.OCI_USER }}
+      OCI_TENANT: ${{ secrets.OCI_TENANCY }}
+      OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
+      OCI_REGION: ${{ secrets.OCI_REGION }} 
+      OCI_KB_ID: ${{ secrets.OCI_KB_ID }}
+      OCI_COMPARTMENT_ID: ${{ secrets.OCI_COMPARTMENT_ID }}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -19,36 +20,9 @@ jobs:
       - name: Build 
         run: |
           mvn package
-          java -jar sbom-utils.jar target/NativeHelloWorld.cdx.sbom.json --output=target/NativeHelloWorld.app-deps.json
 
-      - name: Create ADM Vuln.Audit
-        uses: oracle-actions/run-oci-cli-command@v1.1.1
-        id: create-adm-va
-        with:
-          command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --compartment-id=${{ secrets.ADM_VA_COMPART }} --display-name="native-hello-world-2" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json --configuration=file://oci/adm-va-config.json'
-          query: "[data.id]"
-          
-      - name: ADM Wait for VA (60s)
-        id: adm-wait-va
+      - name: Create ADM Vuln.Audit 
         run: |
-          sleep 60s
-          echo "ADM_VA_ID=${{ steps.create-adm-va.outputs.output }}" >> $GITHUB_ENV
+          echo ${{ secrets.OCI_KEY_CONTENT }} > oci_key.pem
+          java -jar .github/workflows/adm-java-sdk-jar-with-dependencies.jar --privatekey= oci_key.pem --name=GH_naive_helloworld target/NativeHelloWorld.cdx.sbom.json 
 
-      - name: GET ADM Vuln.Audit
-        uses: oracle-actions/run-oci-cli-command@v1.1.1
-        id: get-adm-va
-        with:
-          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}"
-          query: "data"
-          
-      - name: Evaluate Vuln.Audit
-        run: |
-          VA_RESULT=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '."is-success",."lifecycle-state"')
-
-          if [ "$VA_RESULT" != "trueACTIVE" ]; then
-            echo "# FAILED Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
-            exit 1
-          else
-            echo "# PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
-          fi  
-          
