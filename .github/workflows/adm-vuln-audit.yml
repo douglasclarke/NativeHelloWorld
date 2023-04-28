@@ -5,12 +5,13 @@ jobs:
     name: Build HelloWorld jar on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
-      OCI_USER: ${{ secrets.OCI_USER }}
-      OCI_TENANT: ${{ secrets.OCI_TENANCY }}
-      OCI_FINGERPRINT: ${{ secrets.OCI_FINGERPRINT }}
-      OCI_REGION: ${{ secrets.OCI_REGION }} 
-      OCI_KB_ID: ${{ secrets.OCI_KB_ID }}
-      OCI_COMPARTMENT_ID: ${{ secrets.OCI_COMPARTMENT_ID }}
+      OCI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_TENANT: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_PRIVATE_KEY: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
+      OCI_KB_ID: ${{ secrets.ADM_KB }}
+      OCI_COMPARTMENT_ID: ${{ secrets.ADM_VA_COMPART }}
     strategy:
       matrix:
         os: [ubuntu-latest]
@@ -23,6 +24,5 @@ jobs:
 
       - name: Create ADM Vuln.Audit 
         run: |
-          echo ${{ secrets.OCI_KEY_CONTENT }} > oci_key.pem
-          java -jar .github/workflows/adm-java-sdk-jar-with-dependencies.jar --privatekey= oci_key.pem --name=GH_naive_helloworld target/NativeHelloWorld.cdx.sbom.json 
+          java -jar .github/workflows/adm-java-sdk-jar-with-dependencies.jar --name=GH_naive_helloworld target/NativeHelloWorld.cdx.sbom.json 
 
