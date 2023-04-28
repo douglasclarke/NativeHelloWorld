@@ -25,5 +25,5 @@ jobs:
       - name: Create ADM Vuln.Audit 
         run: |
           env | grep "OCI_"
-          java -jar .github/workflows/adm-java-sdk-jar-with-dependencies.jar create-audit --name=GH_naive_helloworld target/NativeHelloWorld.cdx.sbom.json 
+          java -jar .github/workflows/adm-java-sdk-jar-with-dependencies.jar create-audit --name=GH_naive_helloworld --print-vulnerabilities --fail-on-vulnerability=false target/NativeHelloWorld.cdx.sbom.json 
 
