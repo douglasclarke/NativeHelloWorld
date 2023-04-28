@@ -5,8 +5,8 @@ jobs:
     name: Build HelloWorld jar on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     env:
-      OCI_USER: ${{ secrets.OCI_CLI_USER }}
-      OCI_TENANT: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_USER_ID: ${{ secrets.OCI_CLI_USER }}
+      OCI_TENANT_ID: ${{ secrets.OCI_CLI_TENANCY }}
       OCI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_PRIVATE_KEY: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
