@@ -16,13 +16,12 @@ jobs:
       OCI_PRIVATE_KEY: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
       OCI_KB_ID: ${{ secrets.ADM_KB }}
-      OCI_COMPARTMENT_ID: ${{ secrets.ADM_VA_COMPART }}
 
     steps:
     
       - uses: actions/checkout@v3
       
+      # See pom.xml for SBOM and Vuln.Audit task configurations
       - name: Create vuln. audit 
-        run: |
-          mvn verify -DskipCreateAudit=false --no-transfer-progress
+        run: mvn verify -DskipCreateAudit=false --no-transfer-progress
 
