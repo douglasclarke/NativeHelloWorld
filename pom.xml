@@ -14,6 +14,7 @@
     <native.maven.plugin.version>0.9.19</native.maven.plugin.version>
     <oci.adm-java-sdk.version>1.0</oci.adm-java-sdk.version>
     <skipCreateAudit>true</skipCreateAudit>
+    <failOnVulnerability>false</failOnVulnerability>
   </properties>
 
   <profiles>
@@ -169,7 +170,7 @@
                 <!-- create-audit options -->
                 <argument>--print-vulnerabilities</argument>
                 <argument>--audit-config=src/adm-audit-config.json</argument>
-                <argument>--fail-on-vulnerability=false</argument>
+                <argument>--fail-on-vulnerability=${failOnVulnerability}</argument>
                 <argument>--include-metadata-component=false</argument>
                 <argument>target/${project.artifactId}.cdx.sbom.json</argument>
               </arguments>
