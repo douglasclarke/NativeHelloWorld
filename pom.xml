@@ -179,6 +179,11 @@
             <!-- TODO: remove this temporary solution when adm-java-sdk is published as maven artifact -->
             <systemPath>${project.basedir}/.github/workflows/adm-java-sdk-jar-with-dependencies.jar</systemPath>
           </dependency>
+          <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.7</version>
+          </dependency>
         </dependencies>
       </plugin>
     </plugins>
