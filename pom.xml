@@ -13,8 +13,10 @@
     <graalvm.version>22.3.0</graalvm.version>
     <native.maven.plugin.version>0.9.19</native.maven.plugin.version>
     <oci.adm-java-sdk.version>1.0</oci.adm-java-sdk.version>
+
     <skipCreateAudit>true</skipCreateAudit>
     <failOnVulnerability>false</failOnVulnerability>
+    <printVulnerabilities>true</printVulnerabilities>
   </properties>
 
   <profiles>
@@ -168,7 +170,7 @@
                 <argument>--privatekey=${oci_private_key}</argument>
                 <argument>--region=${oci_region}</argument>
                 <!-- create-audit options -->
-                <argument>--print-vulnerabilities</argument>
+                <argument>--print-vulnerabilities=${printVulnerabilities}</argument>
                 <argument>--audit-config=src/adm-audit-config.json</argument>
                 <argument>--fail-on-vulnerability=${failOnVulnerability}</argument>
                 <argument>--include-metadata-component=false</argument>
