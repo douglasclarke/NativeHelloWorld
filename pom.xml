@@ -181,6 +181,7 @@
             <groupId>com.oracle.oci.adm</groupId>
             <artifactId>adm-java-sdk</artifactId>
             <version>${oci.adm-java-sdk.version}</version>
+            <scope>system</scope>
             <!-- TODO: remove this temporary solution when adm-java-sdk is published as maven artifact -->
             <systemPath>${project.basedir}/.github/workflows/adm-java-sdk-jar-with-dependencies.jar</systemPath>
           </dependency>
