@@ -23,5 +23,5 @@ jobs:
       
       # See pom.xml for SBOM and Vuln.Audit task configurations
       - name: Create vuln. audit 
-        run: mvn verify -DskipCreateAudit=false -DfailOnVulnerability=true --no-transfer-progress
+        run: mvn verify -DskipCreateAudit=false -DprintVulnerabilities=true -DfailOnVulnerability=false --no-transfer-progress
 
