@@ -1,9 +1,9 @@
-name: Build with ADM Vuln.Audit
+name: ADM Vulnerability Audit
 on: [workflow_dispatch]
 jobs:
   build:
-    name: Build HelloWorld jar on ${{ matrix.os }}
-    runs-on: ${{ matrix.os }}
+    name: Checkout code and create vuln.audit
+    runs-on: ubuntu-latest
     env:
       OCI_USER_ID: ${{ secrets.OCI_CLI_USER }}
       OCI_TENANT_ID: ${{ secrets.OCI_CLI_TENANCY }}
@@ -12,18 +12,12 @@ jobs:
       OCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
       OCI_KB_ID: ${{ secrets.ADM_KB }}
       OCI_COMPARTMENT_ID: ${{ secrets.ADM_VA_COMPART }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
+
     steps:
+    
       - uses: actions/checkout@v3
       
-      - name: Build 
+      - name: Create vuln. audit 
         run: |
-          mvn package
-
-      - name: Create ADM Vuln.Audit 
-        run: |
-          env | grep "OCI_"
-          java -jar .github/workflows/adm-java-sdk-jar-with-dependencies.jar create-audit --name=GH_naive_helloworld --print-vulnerabilities --fail-on-vulnerability=false target/NativeHelloWorld.cdx.sbom.json 
+          mvn verify -DskipCreateAudit=false
 
