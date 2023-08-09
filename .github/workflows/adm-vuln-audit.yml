@@ -14,7 +14,7 @@ jobs:
       OCI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
       OCI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-      XOCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
+      OCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
 
     steps:
     
