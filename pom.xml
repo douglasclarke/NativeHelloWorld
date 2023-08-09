@@ -164,8 +164,7 @@
                 <argument>create-audit</argument>
                 <argument>--name=${project.artifactId}</argument>
                 <!-- create-audit options -->
-                <argument>--knowledgebase=${ADM_KB}</argument>
-                <argument>--compartment=${ADM_VA_COMPART}</argument>
+                <argument>--knowledgebase=${admKB}</argument>
                 <argument>--print-vulnerabilities=${printVulnerabilities}</argument>
                 <argument>--audit-config=src/adm-audit-config.json</argument>
                 <argument>--fail-on-vulnerability=${failOnVulnerability}</argument>
