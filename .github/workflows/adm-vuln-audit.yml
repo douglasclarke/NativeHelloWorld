@@ -15,7 +15,6 @@ jobs:
       OCI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_PRIVATE_KEY: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
-      OCI_KB_ID: ${{ secrets.ADM_KB }}
 
     steps:
     
@@ -29,5 +28,5 @@ jobs:
       
       # See pom.xml for SBOM and Vuln.Audit task configurations
       - name: Create vuln. audit 
-        run: mvn verify -DskipCreateAudit=false --knowledgebase=${{ secrets.ADM_KB }} --compartment=${{ secrets.ADM_VA_COMPART }} --name="NativeHelloWorld" -DprintVulnerabilities=true -DfailOnVulnerability=false --no-transfer-progress
+        run: mvn verify -DskipCreateAudit=false -DadmKB=${{ secrets.ADM_KB }} -DprintVulnerabilities=true -DfailOnVulnerability=false --no-transfer-progress
 
