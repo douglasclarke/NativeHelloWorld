@@ -132,7 +132,7 @@
             </goals>
             <configuration>
               <projectType>library</projectType>
-              <schemaVersion>1.4</schemaVersion>
+              <schemaVersion>1.5</schemaVersion>
               <includeCompileScope>true</includeCompileScope>
               <includeProvidedScope>false</includeProvidedScope>
               <includeRuntimeScope>true</includeRuntimeScope>
