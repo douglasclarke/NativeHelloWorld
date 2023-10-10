@@ -1,26 +1,60 @@
-name: ADM Vulnerability Audit
-on:
-  push:
-    branches: [ "main" ]
-  pull_request:
-  workflow_dispatch:
-
+name: Build with ADM Vuln.Audit
+on: [workflow_dispatch]
 jobs:
   build:
-    name: Checkout code and create vuln.audit
-    runs-on: ubuntu-latest
+    name: Build HelloWorld native-image on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     env:
-      OCI_USER: ${{ secrets.OCI_CLI_USER }}
-      OCI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
-      OCI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
-      OCI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
-      OCI_REGION: ${{ secrets.OCI_CLI_REGION }} 
-
+      OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
+      OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
+      OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
+      OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
+      OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
     steps:
-    
       - uses: actions/checkout@v3
       
-      # See pom.xml for SBOM and Vuln.Audit task configurations
-      - name: Create vuln. audit 
-        run: mvn verify -DskipCreateAudit=false -DadmKB=${{ secrets.ADM_KB }} -DprintVulnerabilities=true -DfailOnVulnerability=false --no-transfer-progress
+      - name: Build 
+        run: |
+          mvn package
 
+      - name: Create ADM Vuln.Audit
+        uses: oracle-actions/run-oci-cli-command@v1.1.1
+        id: create-adm-va
+        with:
+          command: |
+            'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --display-name="native-hello-world-2" \
+              --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json \
+              --configuration=file://oci/adm-va-config.json --wait-for-state SUCCEEDED --wait-for-state FAILED'
+          query: "[data.id]"
+
+      - name: ADM Wait for VA (60s)
+        id: adm-wait-va
+        run: |
+          sleep 60s
+
+      - name: GET ADM Vuln.Audit
+        uses: oracle-actions/run-oci-cli-command@v1.1.1
+        id: get-adm-va
+        with:
+          command: "adm vulnerability-audit get --vulnerability-audit-id=${{ steps.create-adm-va.outputs.raw_output }}"
+          query: "data"
+          
+      - name: Evaluate Vuln.Audit
+        run: |
+          VA_RESULT=$(echo ${{ steps.get-adm-va.outputs.output }} | jq -jr '."is-success",."lifecycle-state"')
+
+          if [ "$VA_RESULT" != "trueACTIVE" ]; then
+            echo "# FAILED Vulnerability Audit" >> $GITHUB_STEP_SUMMARY
+            echo "## Vulnerability Audit OCID: ${{ env.ADM_VA_ID }}" >> $GITHUB_STEP_SUMMARY
+            echo "oci adm vulnerability-audit get --vulnerability-audit-id=${{ env.ADM_VA_ID }}" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          else
+            echo "### PASSED Vulnerability Audit :rocket:" >> $GITHUB_STEP_SUMMARY
+          fi  
+          
+#      - name: Build Docker image
+#        run: |
+#          docker build -t native-hello .
