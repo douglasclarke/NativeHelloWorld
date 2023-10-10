@@ -34,5 +34,5 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: create-adm-va
         with:
-          command: '--version'
+          command: '--version --debug'
 
