@@ -37,10 +37,7 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: create-adm-va
         with:
-          command: |
-            'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --display-name="native-hello-world-2" \
-              --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json \
-              --configuration=file://oci/adm-va-config.json --wait-for-state SUCCEEDED --wait-for-state FAILED'
+          command: 'adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --display-name="native-hello-world-2" --build-type="MAVEN" --application-dependencies=file://target/NativeHelloWorld.app-deps.json --configuration=file://oci/adm-va-config.json --wait-for-state SUCCEEDED --wait-for-state FAILED'
           query: "[data.id]"
 
       - name: ADM Wait for VA (60s)
