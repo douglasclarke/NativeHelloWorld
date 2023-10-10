@@ -28,7 +28,7 @@ jobs:
       
       - name: Build 
         run: |
-          mvn package
+          mvn package -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO
 
       - name: Create ADM Vuln.Audit
         uses: oracle-actions/run-oci-cli-command@v1.1.1
