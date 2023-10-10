@@ -1,20 +1,33 @@
 name: Build with ADM Vuln.Audit
 on: [workflow_dispatch]
 jobs:
+  
+
   build:
     name: Build HelloWorld native-image on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+        
     env:
       OCI_CLI_USER: ${{ secrets.OCI_CLI_USER }}
       OCI_CLI_TENANCY: ${{ secrets.OCI_CLI_TENANCY }}
       OCI_CLI_FINGERPRINT: ${{ secrets.OCI_CLI_FINGERPRINT }}
       OCI_CLI_KEY_CONTENT: ${{ secrets.OCI_CLI_KEY_CONTENT }}
       OCI_CLI_REGION: ${{ secrets.OCI_CLI_REGION }}
+      
     strategy:
       matrix:
+        java-version: [17]
         os: [ubuntu-latest]
+
     steps:
       - uses: actions/checkout@v3
+
+      - name: Set up JDK ${{ matrix.java-version }}
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'oracle'
+          cache: maven  
       
       - name: Build 
         run: |
