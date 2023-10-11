@@ -135,40 +135,7 @@
           <outputName>NativeHelloWorld.cdx.sbom</outputName>
         </configuration>
       </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>exec-maven-plugin</artifactId>
-        <version>3.1.0</version>
-        <executions>
-          <execution>
-            <id>Create ADM App-Deps from SBOM</id>
-            <phase>package</phase>
-            <goals>
-              <goal>java</goal>
-            </goals>
-            <configuration>
-              <mainClass>com.oracle.oci.adm.Cli</mainClass>
-              <includePluginDependencies>true</includePluginDependencies>
-              <arguments>
-                <argument>convert-sbom</argument>
-                <!-- ADM created vulnerability audit values being passed in through Maven settings.xml or Env variables -->
-                <argument>--output=target/NativeHelloWorld.app-deps.json</argument>
-                <argument>target/${project.artifactId}.cdx.sbom.json</argument>
-              </arguments>
-            </configuration>
-          </execution>
-        </executions>
-        <dependencies>
-          <dependency>
-            <groupId>com.oracle.oci.adm</groupId>
-            <artifactId>adm-java-sdk</artifactId>
-            <version>${oci.adm-java-sdk.version}</version>
-            <scope>system</scope>
-            <!-- TODO: remove this temporary solution when adm-java-sdk is published as maven artifact -->
-            <systemPath>${project.basedir}/adm-java-sdk-jar-with-dependencies.jar</systemPath>
-          </dependency>
-        </dependencies>
-      </plugin>
+
     </plugins>
   </build>
 
