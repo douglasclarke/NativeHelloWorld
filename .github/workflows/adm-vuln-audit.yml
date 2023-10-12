@@ -26,8 +26,11 @@ jobs:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17' 
       
-      - name: Build 
+      - name: mvn package producing SBOM
         run: mvn package -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO
+
+      - name: Convert SBOM to ADM app-deps
+        run: java -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO -jar adm-java-sdk-jar-with-dependencies.jar convert-sbom --output target/NativeHelloWorld.app-deps.json target/NativeHelloWorld.cdx.sbom.json
 
       - name: Retrieve the display name and shape of the instances in my compartment
         uses: oracle-actions/run-oci-cli-command@v1.1.1
