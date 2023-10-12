@@ -24,6 +24,7 @@ jobs:
         with:
           command: 'compute instance list --compartment-id ${{ steps.find-compartment-id.outputs.raw_output }}'
           query: 'data[*].{name: \"display-name\", shape: shape}'
+          silent: false
 
       - name: List the display name and shape of the instances in my compartment
         run: |
