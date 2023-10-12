@@ -34,7 +34,7 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: find-instances
         with:
-          command: 'compute instance list'
-          query: 'data[*].{name: \"display-name\", shape: shape}'
+          command: 'iam compartment list'
+          query: 'data[*].name'
           silent: false
 
