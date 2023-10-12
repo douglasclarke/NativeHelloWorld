@@ -1,4 +1,4 @@
-name: Build with ADM Vuln.Audit
+name: ADM Vuln.Audit
 on: [workflow_dispatch]
 jobs:
   
@@ -26,15 +26,14 @@ jobs:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17' 
       
-#      - name: Build 
-#        run: |
-#          mvn package -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO
+      - name: Build 
+        run: mvn package -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO
 
       - name: Retrieve the display name and shape of the instances in my compartment
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: find-instances
         with:
-          command: 'iam compartment list'
-          query: 'data[*].name'
+          command: 'oci adm vulnerability-audt create --knowledge-base-id=${{ secrets.ADM_KB }} --build-type=UNSET --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
+          query: 'data[].id'
           silent: false
 
