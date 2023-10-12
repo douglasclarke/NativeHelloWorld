@@ -33,7 +33,7 @@ jobs:
         uses: oracle-actions/run-oci-cli-command@v1.1.1
         id: find-instances
         with:
-          command: 'oci adm vulnerability-audt create --knowledge-base-id=${{ secrets.ADM_KB }} --build-type=UNSET --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
+          command: 'oci adm vulnerability-audit create --knowledge-base-id=${{ secrets.ADM_KB }} --build-type=UNSET --application-dependencies=file://target/NativeHelloWorld.app-deps.json'
           query: 'data[].id'
           silent: false
 
