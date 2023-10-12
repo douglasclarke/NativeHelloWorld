@@ -26,13 +26,15 @@ jobs:
           distribution: 'temurin' # See 'Supported distributions' for available options
           java-version: '17' 
       
-      - name: Build 
-        run: |
-          mvn package -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO
+#      - name: Build 
+#        run: |
+#          mvn package -Dorg.slf4j.simpleLogger.defaultLogLevel=INFO
 
-      - name: Create ADM Vuln.Audit
+      - name: Retrieve the display name and shape of the instances in my compartment
         uses: oracle-actions/run-oci-cli-command@v1.1.1
-        id: create-adm-va
+        id: find-instances
         with:
-          command: 'compartment list'
+          command: 'compute instance list'
+          query: 'data[*].{name: \"display-name\", shape: shape}'
+          silent: false
 
