@@ -19,6 +19,7 @@ public class HelloWorld {
         BufferedWriter out = new BufferedWriter(new OutputStreamWriter(System.out));
         yaml.dump(data, out);
 
+        String schema = "type Query{hello: String}";
         TypeDefinitionRegistry typeDefinitionRegistry = new SchemaParser().parse(schema);
         Optional<?> typeDef = typeDefinitionRegistry.getType("Query");
 
